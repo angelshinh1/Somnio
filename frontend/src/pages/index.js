@@ -92,7 +92,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-neutral-800 mb-3">Find Connections</h3>
               <p className="text-neutral-600">
-                Discover others who've had remarkably similar dreams using AI-powered analysis.
+                Discover others who&apos;ve had remarkably similar dreams using AI-powered analysis.
               </p>
             </div>
 
