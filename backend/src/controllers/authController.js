@@ -48,6 +48,7 @@ const authController = {
       const { passwordHash: _, ...userResponse } = newUser;
       
       res.status(201).json({
+        success: true,
         message: 'User registered successfully',
         user: userResponse,
         token
@@ -98,6 +99,7 @@ const authController = {
       const { passwordHash: _, ...userResponse } = user;
 
       res.json({
+        success: true,
         message: 'Login successful',
         user: userResponse,
         token
@@ -118,10 +120,18 @@ const authController = {
         return res.status(404).json({ error: 'User not found' });
       }
 
-      // Return user data (without password hash)
-      const { passwordHash: _, ...userResponse } = user;
+      // Return user data (without password hash and reset tokens)
+      const { 
+        passwordHash: _, 
+        resetToken: __, 
+        resetTokenExpires: ___, 
+        ...userResponse 
+      } = user;
       
-      res.json({ user: userResponse });
+      res.json({ 
+        success: true,
+        user: userResponse 
+      });
 
     } catch (error) {
       console.error('Get profile error:', error);
@@ -131,7 +141,10 @@ const authController = {
 
   // Logout (optional - mainly for clearing client-side token)
   logout: (req, res) => {
-    res.json({ message: 'Logout successful' });
+    res.json({ 
+      success: true,
+      message: 'Logout successful' 
+    });
   },
 
   // Change password for authenticated user
@@ -183,6 +196,7 @@ const authController = {
       });
 
       res.json({
+        success: true,
         message: 'Password changed successfully'
       });
 
@@ -209,6 +223,7 @@ const authController = {
       if (!user) {
         // Don't reveal if email exists or not for security
         return res.json({
+          success: true,
           message: 'If the email exists, a password reset link has been sent'
         });
       }
@@ -240,6 +255,7 @@ const authController = {
       console.log(`Reset link: http://localhost:3000/reset-password?token=${resetToken}`);
 
       res.json({
+        success: true,
         message: 'If the email exists, a password reset link has been sent',
         // Remove this in production - only for development
         resetToken: process.env.NODE_ENV === 'development' ? resetToken : undefined
@@ -321,6 +337,7 @@ const authController = {
       });
 
       res.json({
+        success: true,
         message: 'Password reset successfully'
       });
 
@@ -384,9 +401,15 @@ const authController = {
 
       // Return updated user data (without password hash)
       const user = result.records[0].get('u').properties;
-      const { passwordHash: _, resetToken: __, resetTokenExpires: ___, ...userResponse } = user;
+      const { 
+        passwordHash: _, 
+        resetToken: __, 
+        resetTokenExpires: ___, 
+        ...userResponse 
+      } = user;
       
       res.json({
+        success: true,
         message: 'Profile updated successfully',
         user: {
           ...userResponse,
@@ -441,6 +464,7 @@ const authController = {
       await graphService.runQuery(query, { userId: req.userId });
 
       res.json({
+        success: true,
         message: 'Account deleted successfully. Your dreams have been preserved anonymously.'
       });
 
