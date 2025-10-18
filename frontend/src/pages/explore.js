@@ -63,20 +63,13 @@ export default function Explore() {
   }, []);
 
   const handleDreamClick = (dream) => {
-    if (!isAuthenticated) {
-      // Show a message that they need to log in to see details
-      setSelectedDream({
-        ...dream,
-        requiresAuth: true
-      });
-    } else {
-      // Authenticated users can see the dream details
-      setSelectedDream(dream);
-    }
+    // Set both hover and selected for click (keeps tooltip visible)
+    setHoveredDream(dream);
+    setSelectedDream(dream);
   };
 
   const handleDreamHover = (dream) => {
-    // Don't update hover if a dream is already selected (clicked)
+    // Only update hover if nothing is clicked/selected
     if (!selectedDream) {
       setHoveredDream(dream);
     }
@@ -169,13 +162,13 @@ export default function Explore() {
         )}
       </div>
 
-      {/* Hover Tooltip - stays visible until clicked */}
-      {hoveredDream && !selectedDream && (
+      {/* Hover/Click Tooltip - stays visible for both hover and click */}
+      {hoveredDream && (
         <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-6 md:w-96 z-30 animate-fade-in">
-          <div className="bg-slate-800/95 backdrop-blur-md rounded-lg shadow-2xl border border-primary-700/50 p-5">
+          <div className="bg-slate-800/95 backdrop-blur-md rounded-lg shadow-2xl border border-primary-700/50 p-5 relative">
             <button
-              onClick={() => setHoveredDream(null)}
-              className="absolute top-3 right-3 text-primary-400 hover:text-primary-300"
+              onClick={handleCloseDreamDetail}
+              className="absolute top-3 right-3 text-primary-400 hover:text-primary-300 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -190,7 +183,7 @@ export default function Explore() {
                   boxShadow: `0 0 15px ${getEmotionColor(hoveredDream.emotion)}60`
                 }}
               />
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 pr-6">
                 <h4 className="text-lg font-semibold text-primary-100 truncate">
                   {hoveredDream.title}
                 </h4>
@@ -219,82 +212,10 @@ export default function Explore() {
               onClick={() => handleViewDream(hoveredDream.id)}
               className="w-full py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium text-sm flex items-center justify-center gap-2"
             >
-              {isAuthenticated ? 'View Details' : 'Login to View'}
+              {isAuthenticated ? 'View Full Dream' : 'Login to View'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Dream Detail Panel */}
-      {selectedDream && (
-        <div className="absolute bottom-0 left-0 right-0 z-20 bg-slate-800/95 backdrop-blur-md border-t border-primary-800/30 p-6 max-h-[50vh] overflow-y-auto">
-          <button
-            onClick={handleCloseDreamDetail}
-            className="absolute top-4 right-4 text-primary-400 hover:text-primary-300"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-start gap-4 mb-4">
-              <div 
-                className="w-12 h-12 rounded-full flex-shrink-0"
-                style={{
-                  backgroundColor: getEmotionColor(selectedDream.emotion),
-                  boxShadow: `0 0 20px ${getEmotionColor(selectedDream.emotion)}40`
-                }}
-              />
-              <div className="flex-1">
-                <h3 className="text-2xl font-bold text-primary-100 mb-2">
-                  {selectedDream.title}
-                </h3>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="text-xs px-2 py-1 bg-primary-900/30 text-primary-300 rounded">
-                    {selectedDream.emotion}
-                  </span>
-                  {selectedDream.tags && selectedDream.tags.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs px-2 py-1 bg-slate-700 text-primary-200 rounded"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {selectedDream.requiresAuth ? (
-              <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-4 mb-4">
-                <div className="flex items-start gap-3">
-                  <svg className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  <div>
-                    <h4 className="text-amber-100 font-semibold mb-1">Login Required</h4>
-                    <p className="text-amber-200 text-sm">
-                      You need to be logged in to view the full details of this dream. 
-                      Create an account or sign in to explore the dream network!
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-primary-200 mb-4 line-clamp-3">
-                {selectedDream.description}
-              </p>
-            )}
-
-            <button
-              onClick={() => handleViewDream(selectedDream.id)}
-              className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium"
-            >
-              {isAuthenticated ? 'View Full Dream' : 'Login to View Dream'}
             </button>
           </div>
         </div>
