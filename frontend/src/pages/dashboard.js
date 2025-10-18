@@ -290,45 +290,6 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-
-        {/* Quick Actions */}
-        <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl p-6 border border-primary-100">
-          <h3 className="text-lg font-semibold text-neutral-800 mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <button
-              onClick={() => router.push('/dreams/search')}
-              className="flex items-center space-x-3 p-4 bg-white/60 rounded-lg hover:bg-white/80 transition-colors text-left"
-            >
-              <span className="text-2xl">🔍</span>
-              <div>
-                <p className="font-medium text-neutral-800">Search Dreams</p>
-                <p className="text-sm text-neutral-600">Find specific dreams or patterns</p>
-              </div>
-            </button>
-            
-            <button
-              onClick={() => router.push('/insights')}
-              className="flex items-center space-x-3 p-4 bg-white/60 rounded-lg hover:bg-white/80 transition-colors text-left"
-            >
-              <span className="text-2xl">📈</span>
-              <div>
-                <p className="font-medium text-neutral-800">View Insights</p>
-                <p className="text-sm text-neutral-600">Analyze your dream patterns</p>
-              </div>
-            </button>
-            
-            <button
-              onClick={() => router.push('/dreams')}
-              className="flex items-center space-x-3 p-4 bg-white/60 rounded-lg hover:bg-white/80 transition-colors text-left"
-            >
-              <span className="text-2xl">📖</span>
-              <div>
-                <p className="font-medium text-neutral-800">Dream Journal</p>
-                <p className="text-sm text-neutral-600">Browse your complete journal</p>
-              </div>
-            </button>
-          </div>
-        </div>
       </div>
     </Layout>
     </ProtectedRoute>
