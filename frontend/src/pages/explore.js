@@ -76,18 +76,23 @@ export default function Explore() {
   };
 
   const handleDreamHover = (dream) => {
-    setHoveredDream(dream);
+    // Don't update hover if a dream is already selected (clicked)
+    if (!selectedDream) {
+      setHoveredDream(dream);
+    }
   };
 
   const handleCloseDreamDetail = () => {
     setSelectedDream(null);
+    setHoveredDream(null);
   };
 
-  const handleViewDream = () => {
-    if (selectedDream && isAuthenticated) {
-      router.push(`/dreams/${selectedDream.id}`);
+  const handleViewDream = (dreamId) => {
+    // Always go to the dream detail page with the dream ID
+    if (isAuthenticated) {
+      router.push(`/dreams/${dreamId}`);
     } else {
-      router.push(`/login?returnTo=/dreams/${selectedDream?.id}`);
+      router.push(`/login?returnTo=/dreams/${dreamId}`);
     }
   };
 
@@ -164,38 +169,61 @@ export default function Explore() {
         )}
       </div>
 
-      {/* Hover Tooltip */}
+      {/* Hover Tooltip - stays visible until clicked */}
       {hoveredDream && !selectedDream && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none">
-          <div className="bg-slate-800/95 backdrop-blur-md rounded-lg shadow-2xl border border-primary-700/50 p-4 max-w-sm">
-            <div className="flex items-center gap-3 mb-2">
+        <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-6 md:w-96 z-30 animate-fade-in">
+          <div className="bg-slate-800/95 backdrop-blur-md rounded-lg shadow-2xl border border-primary-700/50 p-5">
+            <button
+              onClick={() => setHoveredDream(null)}
+              className="absolute top-3 right-3 text-primary-400 hover:text-primary-300"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <div className="flex items-center gap-3 mb-3">
               <div 
-                className="w-8 h-8 rounded-full flex-shrink-0"
+                className="w-10 h-10 rounded-full flex-shrink-0"
                 style={{
                   backgroundColor: getEmotionColor(hoveredDream.emotion),
                   boxShadow: `0 0 15px ${getEmotionColor(hoveredDream.emotion)}60`
                 }}
               />
-              <h4 className="text-lg font-semibold text-primary-100 truncate">
-                {hoveredDream.title}
-              </h4>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-lg font-semibold text-primary-100 truncate">
+                  {hoveredDream.title}
+                </h4>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-1.5 mb-2">
-              <span className="text-xs px-2 py-0.5 bg-primary-900/40 text-primary-300 rounded">
+            
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              <span className="text-xs px-2 py-1 bg-primary-900/40 text-primary-300 rounded">
                 {hoveredDream.emotion}
               </span>
-              {hoveredDream.tags && hoveredDream.tags.slice(0, 3).map((tag, idx) => (
+              {hoveredDream.tags && hoveredDream.tags.slice(0, 4).map((tag, idx) => (
                 <span
                   key={idx}
-                  className="text-xs px-2 py-0.5 bg-slate-700/60 text-primary-200 rounded"
+                  className="text-xs px-2 py-1 bg-slate-700/60 text-primary-200 rounded"
                 >
                   #{tag}
                 </span>
               ))}
             </div>
-            <p className="text-primary-300 text-sm italic">
-              Click to view details
+
+            <p className="text-primary-200 text-sm mb-4 line-clamp-2">
+              {hoveredDream.description}
             </p>
+
+            <button
+              onClick={() => handleViewDream(hoveredDream.id)}
+              className="w-full py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium text-sm flex items-center justify-center gap-2"
+            >
+              {isAuthenticated ? 'View Details' : 'Login to View'}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       )}
@@ -263,7 +291,7 @@ export default function Explore() {
             )}
 
             <button
-              onClick={handleViewDream}
+              onClick={() => handleViewDream(selectedDream.id)}
               className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium"
             >
               {isAuthenticated ? 'View Full Dream' : 'Login to View Dream'}
