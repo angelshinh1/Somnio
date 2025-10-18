@@ -70,10 +70,10 @@ export default function Register() {
           {/* Header */}
           <div className="text-center">
             <Link href="/" className="inline-flex items-center space-x-2 mb-6">
-              <span className="text-2xl font-bold text-neutral-800">DreamSync</span>
+              <span className="text-2xl font-bold text-neutral-800">Somnio</span>
             </Link>
             
-            <h2 className="text-3xl font-bold text-neutral-800 mb-2">Join DreamSync</h2>
+            <h2 className="text-3xl font-bold text-neutral-800 mb-2">Join Somnio</h2>
             <p className="text-neutral-600">
               Start your journey of dream exploration and understanding
             </p>

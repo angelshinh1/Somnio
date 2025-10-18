@@ -234,7 +234,7 @@ export default function Explore() {
       <div className="absolute top-24 left-6 z-10 bg-slate-800/80 backdrop-blur-sm rounded-lg p-4 max-w-xs">
         <h3 className="text-primary-100 font-semibold mb-2">About Public Network</h3>
         <p className="text-primary-300 text-sm mb-3">
-          This is a public view of all connected dreams in the DreamSync community. 
+          This is a public view of all connected dreams in the Somnio community. 
           Dreams are connected based on shared themes, emotions, and content.
         </p>
         <div className="space-y-2 text-xs">

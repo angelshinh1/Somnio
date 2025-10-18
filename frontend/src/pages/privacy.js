@@ -9,7 +9,7 @@ export default function Privacy() {
         <div className="prose prose-neutral max-w-none space-y-6 text-neutral-700">
           <section>
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">1. Information We Collect</h2>
-            <p>We collect the following information when you use DreamSync:</p>
+            <p>We collect the following information when you use Somnio:</p>
             <ul className="list-disc pl-6 space-y-1">
               <li><strong>Account Information:</strong> Username, email, password (encrypted)</li>
               <li><strong>Dream Content:</strong> Dream descriptions, titles, tags, emotions, dates</li>
@@ -20,7 +20,7 @@ export default function Privacy() {
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">2. How We Use Your Information</h2>
             <p>Your information is used to:</p>
             <ul className="list-disc pl-6 space-y-1">
-              <li>Provide and maintain the DreamSync service</li>
+              <li>Provide and maintain the Somnio service</li>
               <li>Calculate dream similarities and create connections</li>
               <li>Display public dreams to other users</li>
               <li>Improve our services and user experience</li>
@@ -46,7 +46,7 @@ export default function Privacy() {
 
           <section>
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">5. Data Sharing</h2>
-            <p>We do not sell or share your personal information with third parties. Public dreams are shared with other DreamSync users as intended by the platform functionality.</p>
+            <p>We do not sell or share your personal information with third parties. Public dreams are shared with other Somnio users as intended by the platform functionality.</p>
           </section>
 
           <section>
@@ -70,7 +70,7 @@ export default function Privacy() {
           <section>
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">8. Children&apos;s Privacy</h2>
             <p>
-              DreamSync is not intended for users under 13 years of age. We do not knowingly collect information from children.
+              Somnio is not intended for users under 13 years of age. We do not knowingly collect information from children.
             </p>
           </section>
 

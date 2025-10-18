@@ -10,14 +10,14 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">1. Acceptance of Terms</h2>
             <p>
-              By accessing and using DreamSync, you accept and agree to be bound by the terms and provision of this agreement.
+              By accessing and using Somnio, you accept and agree to be bound by the terms and provision of this agreement.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">2. Use License</h2>
             <p>
-              Permission is granted to temporarily use DreamSync for personal, non-commercial purposes only. This includes:
+              Permission is granted to temporarily use Somnio for personal, non-commercial purposes only. This includes:
             </p>
             <ul className="list-disc pl-6 space-y-1">
               <li>Creating and managing your dream journal</li>
@@ -29,7 +29,7 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">3. User Content</h2>
             <p>
-              You retain all rights to the dreams and content you post. By marking dreams as &quot;public,&quot; you grant DreamSync permission to:
+              You retain all rights to the dreams and content you post. By marking dreams as &quot;public,&quot; you grant Somnio permission to:
             </p>
             <ul className="list-disc pl-6 space-y-1">
               <li>Display your dreams to other users</li>
@@ -52,7 +52,7 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">5. Disclaimer</h2>
             <p>
-              DreamSync is provided &quot;as is&quot; without any warranties. We do not guarantee the accuracy, completeness, or usefulness of any dream interpretations or connections.
+              Somnio is provided &quot;as is&quot; without any warranties. We do not guarantee the accuracy, completeness, or usefulness of any dream interpretations or connections.
             </p>
           </section>
 
@@ -66,7 +66,7 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-semibold text-neutral-800 mb-3">7. Changes to Terms</h2>
             <p>
-              We may update these terms from time to time. Continued use of DreamSync after changes constitutes acceptance of the new terms.
+              We may update these terms from time to time. Continued use of Somnio after changes constitutes acceptance of the new terms.
             </p>
           </section>
 

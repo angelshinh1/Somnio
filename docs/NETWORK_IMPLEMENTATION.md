@@ -1,8 +1,8 @@
-# DreamSync Network Visualization - Implementation Summary
+# Somnio Network Visualization - Implementation Summary
 
 ## 🌟 What I've Built
 
-I've created an **immersive 3D Dream Network** visualization page for DreamSync that displays your dreams and their connections in a beautiful, interactive 3D space!
+I've created an **immersive 3D Dream Network** visualization page for Somnio that displays your dreams and their connections in a beautiful, interactive 3D space!
 
 ## ✨ Features
 

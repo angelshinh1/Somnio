@@ -899,6 +899,6 @@ app.use((err, req, res, next) => {
 
 const PORT = config.port;
 app.listen(PORT, () => {
-  console.log(`🚀 DreamSync backend running on port ${PORT}`);
+  console.log(`🚀 Somnio backend running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
 });

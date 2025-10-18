@@ -1,4 +1,4 @@
-# DreamSync Network Page - Quick Guide
+# Somnio Network Page - Quick Guide
 
 ## 🎯 Overview
 

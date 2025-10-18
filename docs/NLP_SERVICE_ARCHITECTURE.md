@@ -1,7 +1,7 @@
-# DreamSync NLP Service Architecture
+# Somnio NLP Service Architecture
 
 ## Overview
-The NLP service is the intelligent core of DreamSync that transforms raw dream text into meaningful connections between users' dream experiences.
+The NLP service is the intelligent core of Somnio that transforms raw dream text into meaningful connections between users' dream experiences.
 
 ## Core Functionality
 
@@ -351,4 +351,4 @@ async function processDreamSimilarities(dreamId) {
 - Use message queues for async processing
 - Consider specialized vector databases (Pinecone, Weaviate)
 
-This NLP service is the "magic" that makes DreamSync work - it's what allows two strangers to discover they had nearly identical dreams about flying over mountains or being chased through endless corridors.
+This NLP service is the "magic" that makes Somnio work - it's what allows two strangers to discover they had nearly identical dreams about flying over mountains or being chased through endless corridors.

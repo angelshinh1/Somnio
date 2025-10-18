@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About */}
           <div>
-            <h3 className="text-white font-semibold mb-3">DreamSync</h3>
+            <h3 className="text-white font-semibold mb-3">Somnio</h3>
             <p className="text-sm text-neutral-400">
               Connect your dreams with others and discover shared experiences in an immersive 3D network.
             </p>
@@ -52,7 +52,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-8 pt-6 border-t border-neutral-800 text-center text-sm text-neutral-500">
-          <p>&copy; {new Date().getFullYear()} DreamSync. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Somnio. All rights reserved.</p>
         </div>
       </div>
     </footer>

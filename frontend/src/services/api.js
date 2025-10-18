@@ -8,7 +8,7 @@ class APIService {
     
     // Initialize token from localStorage if available
     if (typeof window !== 'undefined') {
-      this.token = localStorage.getItem('dreamSync_token');
+      this.token = localStorage.getItem('somnio_token');
     }
   }
 
@@ -39,9 +39,9 @@ class APIService {
     this.token = token;
     if (typeof window !== 'undefined') {
       if (token) {
-        localStorage.setItem('dreamSync_token', token);
+        localStorage.setItem('somnio_token', token);
       } else {
-        localStorage.removeItem('dreamSync_token');
+        localStorage.removeItem('somnio_token');
       }
     }
   }

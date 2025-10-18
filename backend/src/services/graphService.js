@@ -1,6 +1,8 @@
 const { neo4j } = require('../config/config');
 const driver = require('../config/database');
 const { v4: uuidv4 } = require('uuid');
+require('dotenv').config();
+
 
 class GraphService {
   constructor() {
@@ -8,7 +10,7 @@ class GraphService {
   }
 
   async runQuery(query, params = {}) {
-    const session = this.driver.session({ database: 'dreamsync' });
+    const session = this.driver.session({ database: process.env.NEO4J_DB });
     try {
       const result = await session.run(query, params);
       return result;

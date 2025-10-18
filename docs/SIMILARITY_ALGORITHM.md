@@ -2,7 +2,7 @@
 
 ## Overview
 
-DreamSync uses a **simple but effective tag-based similarity algorithm** that runs entirely in the Node.js backend. No external Python services or costly NLP APIs required! The algorithm automatically connects dreams based on:
+Somnio uses a **simple but effective tag-based similarity algorithm** that runs entirely in the Node.js backend. No external Python services or costly NLP APIs required! The algorithm automatically connects dreams based on:
 
 1. **Tag Matching** (50% weight) - Direct overlap of user-defined tags
 2. **Keyword Extraction** (35% weight) - Automatic extraction of important words from title and description

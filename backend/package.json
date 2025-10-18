@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "somnio-backend",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Somnio - Dream Journal and Connection Platform Backend",
   "dependencies": {
     "axios": "^1.12.2",
     "bcrypt": "^6.0.0",
@@ -18,7 +18,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "neo4j-driver": "^6.0.0",
+    "neo4j-driver": "~5.28.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

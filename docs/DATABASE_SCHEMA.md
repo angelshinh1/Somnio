@@ -1,4 +1,4 @@
-# DreamSync Database Schema Documentation
+# Somnio Database Schema Documentation
 
 ## Node Types
 

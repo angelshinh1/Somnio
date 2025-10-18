@@ -1,5 +1,5 @@
 /**
- * DreamSync Similarity Service
+ * Somnio Similarity Service
  * 
  * Simple but effective dream similarity calculation using:
  * 1. Tag matching (primary metric)

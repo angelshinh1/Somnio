@@ -46,7 +46,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-xl font-semibold text-neutral-800">DreamSync</span>
+            <span className="text-xl font-semibold text-neutral-800">Somnio</span>
           </Link>
 
           {/* Desktop Navigation */}
