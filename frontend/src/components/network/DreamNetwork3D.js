@@ -298,9 +298,52 @@ function Scene({ networkData, onDreamHover, onDreamClick }) {
 
 // Main exported component
 export default function DreamNetwork3D({ networkData, onDreamHover = () => {}, onDreamClick = () => {}, currentUser }) {
+  const [error, setError] = useState(null);
+
+  if (error) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-slate-900">
+        <div className="text-center p-8">
+          <p className="text-red-400 mb-4">Failed to load 3D visualization</p>
+          <button
+            onClick={() => {
+              setError(null);
+              window.location.reload();
+            }}
+            className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+          >
+            Reload
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full">
-      <Canvas style={{ background: '#0f172a' }}>
+      <Canvas 
+        style={{ background: '#0f172a' }}
+        gl={{ 
+          antialias: true,
+          alpha: false,
+          powerPreference: 'high-performance',
+          preserveDrawingBuffer: false,
+          failIfMajorPerformanceCaveat: false
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor('#0f172a');
+          // Handle context loss
+          gl.domElement.addEventListener('webglcontextlost', (event) => {
+            event.preventDefault();
+            console.error('WebGL context lost');
+            setError('WebGL context lost');
+          });
+          gl.domElement.addEventListener('webglcontextrestored', () => {
+            console.log('WebGL context restored');
+            setError(null);
+          });
+        }}
+      >
         <color attach="background" args={['#0f172a']} />
         <fog attach="fog" args={['#0f172a', 10, 50]} />
         <PerspectiveCamera makeDefault position={[0, 5, 15]} fov={75} />
