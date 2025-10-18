@@ -59,6 +59,12 @@ export default function Header() {
                 <Link href="/dreams" className="text-neutral-600 hover:text-primary-600 transition-colors">
                   My Dreams
                 </Link>
+                <Link href="/network" className="text-neutral-600 hover:text-primary-600 transition-colors">
+                  Network
+                </Link>
+                <Link href="/explore" className="text-neutral-600 hover:text-primary-600 transition-colors">
+                  Explore
+                </Link>
                 <Link href="/dreams/new" className="text-neutral-600 hover:text-primary-600 transition-colors">
                   New Dream
                 </Link>
@@ -68,9 +74,6 @@ export default function Header() {
                 <Link href="/explore" className="text-neutral-600 hover:text-primary-600 transition-colors">
                   Explore
                 </Link>
-                <Link href="/network" className="text-neutral-600 hover:text-primary-600 transition-colors">
-                  Network
-                </Link>
               </>
             )}
           </nav>
@@ -79,7 +82,6 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <>
-                <span className="text-sm text-neutral-600">Welcome, {user?.name}</span>
                 <button
                   onClick={handleLogout}
                   className="text-neutral-600 hover:text-primary-600 transition-colors"
@@ -125,11 +127,16 @@ export default function Header() {
                   <Link href="/dreams" className="text-neutral-600 hover:text-primary-600 transition-colors">
                     My Dreams
                   </Link>
+                  <Link href="/network" className="text-neutral-600 hover:text-primary-600 transition-colors">
+                    Dream Network
+                  </Link>
+                  <Link href="/explore" className="text-neutral-600 hover:text-primary-600 transition-colors">
+                    Explore Dreams
+                  </Link>
                   <Link href="/dreams/new" className="text-neutral-600 hover:text-primary-600 transition-colors">
                     New Dream
                   </Link>
                   <hr className="border-neutral-200" />
-                  <span className="text-sm text-neutral-500">Welcome, {user?.name}</span>
                   <button
                     onClick={handleLogout}
                     className="text-left text-neutral-600 hover:text-primary-600 transition-colors"
@@ -141,9 +148,6 @@ export default function Header() {
                 <>
                   <Link href="/explore" className="text-neutral-600 hover:text-primary-600 transition-colors">
                     Explore Dreams
-                  </Link>
-                  <Link href="/network" className="text-neutral-600 hover:text-primary-600 transition-colors">
-                    Dream Network
                   </Link>
                   <hr className="border-neutral-200" />
                   <Link href="/login" className="text-neutral-600 hover:text-primary-600 transition-colors">

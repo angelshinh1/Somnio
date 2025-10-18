@@ -86,17 +86,24 @@ class GraphService {
     };
 
     const result = await this.runQuery(query, params);
-    
-    // Create relationship to user
+
+    // Create relationship to user, with error handling if user node is missing
     const relationshipQuery = `
       MATCH (u:User {id: $userId}), (d:Dream {id: $dreamId})
       CREATE (u)-[:POSTED {timestamp: datetime()}]->(d)
+      RETURN u, d
     `;
-    
-    await this.runQuery(relationshipQuery, { 
-      userId: dreamData.userId, 
-      dreamId: params.id 
-    });
+    try {
+      const relResult = await this.runQuery(relationshipQuery, {
+        userId: dreamData.userId,
+        dreamId: params.id
+      });
+      if (!relResult.records.length) {
+        console.error(`POSTED relationship not created: User ${dreamData.userId} or Dream ${params.id} not found.`);
+      }
+    } catch (err) {
+      console.error('Error creating POSTED relationship:', err);
+    }
 
     return result.records[0]?.get('d').properties;
   }
@@ -231,6 +238,115 @@ class GraphService {
       dream: record.get('d').properties,
       connections: record.get('connections').filter(conn => conn.targetId)
     }));
+  }
+
+  // Clear all SIMILAR_TO relationships for a specific dream
+  async clearSimilarityRelationships(dreamId) {
+    const query = `
+      MATCH (d:Dream {id: $dreamId})-[s:SIMILAR_TO]-()
+      DELETE s
+    `;
+    await this.runQuery(query, { dreamId });
+  }
+
+  // Get all public dreams for similarity calculation
+  async getAllPublicDreamsForSimilarity() {
+    const query = `
+      MATCH (d:Dream)
+      WHERE d.isPublic = true
+      RETURN d
+    `;
+    const result = await this.runQuery(query);
+    return result.records.map(record => {
+      const properties = record.get('d').properties;
+      return {
+        ...properties,
+        id: properties.id,
+        date: properties.date ? properties.date.toString() : null,
+        createdAt: properties.createdAt ? properties.createdAt.toString() : null
+      };
+    });
+  }
+
+  // Create multiple similarity relationships in a batch
+  async createSimilarityRelationshipsBatch(relationships) {
+    if (!relationships || relationships.length === 0) return;
+
+    const query = `
+      UNWIND $relationships as rel
+      MATCH (d1:Dream {id: rel.dream1Id}), (d2:Dream {id: rel.dream2Id})
+      MERGE (d1)-[:SIMILAR_TO {
+        similarity: rel.similarity,
+        calculatedAt: datetime(),
+        sharedThemes: rel.sharedThemes
+      }]->(d2)
+    `;
+
+    await this.runQuery(query, { relationships });
+  }
+
+  // Get the public network of all connected dreams
+  async getPublicNetwork() {
+    const query = `
+      MATCH (d1:Dream)-[s:SIMILAR_TO]->(d2:Dream)
+      WHERE d1.isPublic = true AND d2.isPublic = true
+      RETURN d1, d2, s.similarity as similarity, s.sharedThemes as sharedThemes
+    `;
+
+    const result = await this.runQuery(query);
+    
+    // Build nodes and links
+    const nodesMap = new Map();
+    const links = [];
+
+    result.records.forEach(record => {
+      const dream1 = record.get('d1').properties;
+      const dream2 = record.get('d2').properties;
+      const similarity = record.get('similarity');
+      const sharedThemes = record.get('sharedThemes') || [];
+
+      // Add nodes to map
+      if (!nodesMap.has(dream1.id)) {
+        nodesMap.set(dream1.id, {
+          id: dream1.id,
+          title: dream1.title,
+          description: dream1.description,
+          emotion: dream1.emotion,
+          tags: dream1.tags || [],
+          date: dream1.date,
+          vividness: dream1.vividness,
+          lucidDream: dream1.lucidDream,
+          recurring: dream1.recurring
+        });
+      }
+
+      if (!nodesMap.has(dream2.id)) {
+        nodesMap.set(dream2.id, {
+          id: dream2.id,
+          title: dream2.title,
+          description: dream2.description,
+          emotion: dream2.emotion,
+          tags: dream2.tags || [],
+          date: dream2.date,
+          vividness: dream2.vividness,
+          lucidDream: dream2.lucidDream,
+          recurring: dream2.recurring
+        });
+      }
+
+      // Add link
+      links.push({
+        source: dream1.id,
+        target: dream2.id,
+        similarity,
+        sharedThemes
+      });
+    });
+
+    return {
+      nodes: Array.from(nodesMap.values()),
+      links
+    };
   }
 }
 

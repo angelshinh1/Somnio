@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/layout/Layout';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import DreamCard from '../../components/dreams/DreamCard';
 import apiService from '../../services/api';
 
@@ -98,14 +99,15 @@ export default function Dreams() {
   const emotions = ['happy', 'anxious', 'peaceful', 'confused', 'excited', 'sad', 'curious', 'fearful'];
 
   return (
-    <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-neutral-800 mb-2">My Dreams</h1>
-            <p className="text-neutral-600">Explore and manage your dream collection</p>
-          </div>
+    <ProtectedRoute>
+      <Layout>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-neutral-800 mb-2">My Dreams</h1>
+              <p className="text-neutral-600">Explore and manage your dream collection</p>
+            </div>
           
           <button
             onClick={() => router.push('/dreams/new')}
@@ -220,19 +222,6 @@ export default function Dreams() {
               <p className="text-neutral-600">
                 {dreams.length} dream{dreams.length !== 1 ? 's' : ''} found
               </p>
-              
-              <div className="flex items-center space-x-2">
-                <button className="p-2 text-neutral-500 hover:text-neutral-700 transition-colors" title="Grid view">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                  </svg>
-                </button>
-                <button className="p-2 text-neutral-400 hover:text-neutral-700 transition-colors" title="List view">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
             </div>
 
             {/* Dreams Grid */}
@@ -279,5 +268,6 @@ export default function Dreams() {
         )}
       </div>
     </Layout>
+    </ProtectedRoute>
   );
 }

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/layout/Layout';
+import ProtectedRoute from '../../components/ProtectedRoute';
 import apiService from '../../services/api';
 
 export default function NewDream() {
@@ -17,7 +18,21 @@ export default function NewDream() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
   const router = useRouter();
+
+  // Fetch authenticated user on mount
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const user = await apiService.getCurrentUser();
+        setCurrentUser(user);
+      } catch (err) {
+        setCurrentUser(null);
+      }
+    }
+    fetchUser();
+  }, []);
 
   const emotions = [
     { value: 'happy', label: 'Happy', color: 'text-green-600' },
@@ -44,15 +59,16 @@ export default function NewDream() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!formData.title.trim() || !formData.description.trim()) {
       setError('Title and description are required');
       return;
     }
-    
+    if (!currentUser || !currentUser.id) {
+      setError('You must be logged in to create a dream.');
+      return;
+    }
     setLoading(true);
     setError('');
-
     try {
       const dreamData = {
         title: formData.title.trim(),
@@ -64,13 +80,10 @@ export default function NewDream() {
         isPublic: formData.isPublic,
         lucidDream: formData.isLucid,
         recurring: formData.isRecurring,
-        userId: 'demo-user' // In a real app, this would come from auth
+        userId: currentUser.id
       };
-      
       const response = await apiService.createDream(dreamData);
       console.log('Dream created:', response);
-      
-      // Redirect to dreams list
       router.push('/dreams');
     } catch (err) {
       setError(err.message || 'Failed to create dream. Please try again.');
@@ -80,11 +93,12 @@ export default function NewDream() {
   };
 
   return (
-    <Layout>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center space-x-2 text-sm text-neutral-500 mb-4">
+    <ProtectedRoute>
+      <Layout>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center space-x-2 text-sm text-neutral-500 mb-4">
             <button onClick={() => router.back()} className="hover:text-primary-600 transition-colors">
               ← Back
             </button>
@@ -301,5 +315,6 @@ export default function NewDream() {
         </div>
       </div>
     </Layout>
+    </ProtectedRoute>
   );
 }

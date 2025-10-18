@@ -44,6 +44,7 @@ app.get('/api/health', async (req, res) => {
 // API ROUTES
 // ============================================================================
 const graphService = require('./src/services/graphService');
+const similarityService = require('./src/services/similarityService');
 
 // Dreams Routes
 
@@ -59,6 +60,26 @@ app.get('/api/dreams/public', async (req, res) => {
     res.json({ success: true, count: dreams.length, dreams });
   } catch (error) {
     console.error('Error fetching public dreams:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/network/public
+ * Description: Get the public network of all connected dreams
+ * Response: { success: true, nodes: Dream[], links: Link[] }
+ */
+app.get('/api/network/public', async (req, res) => {
+  try {
+    const networkData = await graphService.getPublicNetwork();
+    res.json({ 
+      success: true, 
+      nodeCount: networkData.nodes.length,
+      linkCount: networkData.links.length,
+      ...networkData 
+    });
+  } catch (error) {
+    console.error('Error fetching public network:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -141,6 +162,41 @@ app.post('/api/dreams', async (req, res) => {
     };
     
     const dream = await graphService.createDream(dreamData);
+    
+    // Calculate similarities with other public dreams (async, don't wait)
+    // Only if this dream is public
+    if (dream.isPublic) {
+      // Run similarity calculation in background
+      setImmediate(async () => {
+        try {
+          console.log(`🔍 Calculating similarities for dream: ${dream.id}`);
+          
+          // Get all other public dreams
+          const allDreams = await graphService.getAllPublicDreamsForSimilarity();
+          
+          // Find similar dreams
+          const similarDreams = similarityService.findSimilarDreams(dream, allDreams, 0.2);
+          
+          console.log(`✨ Found ${similarDreams.length} similar dreams for dream: ${dream.id}`);
+          
+          // Create relationships
+          if (similarDreams.length > 0) {
+            const relationships = similarDreams.map(sim => ({
+              dream1Id: dream.id,
+              dream2Id: sim.dreamId,
+              similarity: sim.similarity,
+              sharedThemes: sim.sharedThemes
+            }));
+            
+            await graphService.createSimilarityRelationshipsBatch(relationships);
+            console.log(`✅ Created ${relationships.length} similarity relationships`);
+          }
+        } catch (error) {
+          console.error('Error calculating similarities:', error);
+        }
+      });
+    }
+    
     res.status(201).json({ success: true, dream });
   } catch (error) {
     console.error('Error creating dream:', error);
@@ -176,6 +232,45 @@ app.put('/api/dreams/:dreamId', async (req, res) => {
     const updatedDream = await graphService.updateDream(dreamId, updates);
     if (!updatedDream) {
       return res.status(404).json({ error: 'Dream not found' });
+    }
+    
+    // Recalculate similarities if dream is public and significant fields changed
+    const significantFields = ['title', 'description', 'tags', 'emotion'];
+    const hasSignificantChanges = significantFields.some(field => updates.hasOwnProperty(field));
+    
+    if (updatedDream.isPublic && hasSignificantChanges) {
+      // Run similarity recalculation in background
+      setImmediate(async () => {
+        try {
+          console.log(`🔄 Recalculating similarities for updated dream: ${dreamId}`);
+          
+          // Clear existing similarity relationships
+          await graphService.clearSimilarityRelationships(dreamId);
+          
+          // Get all other public dreams
+          const allDreams = await graphService.getAllPublicDreamsForSimilarity();
+          
+          // Find similar dreams
+          const similarDreams = similarityService.findSimilarDreams(updatedDream, allDreams, 0.2);
+          
+          console.log(`✨ Found ${similarDreams.length} similar dreams for updated dream: ${dreamId}`);
+          
+          // Create new relationships
+          if (similarDreams.length > 0) {
+            const relationships = similarDreams.map(sim => ({
+              dream1Id: dreamId,
+              dream2Id: sim.dreamId,
+              similarity: sim.similarity,
+              sharedThemes: sim.sharedThemes
+            }));
+            
+            await graphService.createSimilarityRelationshipsBatch(relationships);
+            console.log(`✅ Created ${relationships.length} similarity relationships`);
+          }
+        } catch (error) {
+          console.error('Error recalculating similarities:', error);
+        }
+      });
     }
     
     res.json({ success: true, dream: updatedDream });
@@ -673,6 +768,87 @@ app.get('/api/dreams/tags', async (req, res) => {
     res.json({ success: true, count: tags.length, tags });
   } catch (error) {
     console.error('Error fetching tags:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/similarity/recalculate
+ * Description: Recalculate similarity relationships for all public dreams
+ * Query Parameters:
+ *   - minSimilarity (number, optional): Minimum similarity threshold (0.0-1.0, defaults to 0.3)
+ * Response: { success: true, message: string, processed: number, relationshipsCreated: number }
+ * Note: This is a heavy operation and should be run sparingly (e.g., during maintenance)
+ */
+app.post('/api/similarity/recalculate', async (req, res) => {
+  try {
+    const { minSimilarity = 0.3 } = req.query;
+    const threshold = parseFloat(minSimilarity);
+
+    if (threshold < 0 || threshold > 1) {
+      return res.status(400).json({ error: 'minSimilarity must be between 0.0 and 1.0' });
+    }
+
+    console.log('🔄 Starting full similarity recalculation...');
+
+    // Get all public dreams
+    const allDreams = await graphService.getAllPublicDreamsForSimilarity();
+    console.log(`📊 Processing ${allDreams.length} public dreams`);
+
+    let totalRelationships = 0;
+    const allRelationships = [];
+
+    // Calculate similarities for each dream
+    for (let i = 0; i < allDreams.length; i++) {
+      const dream = allDreams[i];
+      
+      // Find similar dreams (only process dreams after this one to avoid duplicates)
+      const remainingDreams = allDreams.slice(i + 1);
+      const similarDreams = similarityService.findSimilarDreams(dream, remainingDreams, threshold);
+
+      // Add relationships
+      for (const sim of similarDreams) {
+        allRelationships.push({
+          dream1Id: dream.id,
+          dream2Id: sim.dreamId,
+          similarity: sim.similarity,
+          sharedThemes: sim.sharedThemes
+        });
+      }
+
+      totalRelationships += similarDreams.length;
+
+      if ((i + 1) % 10 === 0) {
+        console.log(`✨ Processed ${i + 1}/${allDreams.length} dreams`);
+      }
+    }
+
+    // Clear all existing similarity relationships
+    console.log('🧹 Clearing old similarity relationships...');
+    await graphService.runQuery('MATCH ()-[s:SIMILAR_TO]-() DELETE s');
+
+    // Create all new relationships in batches
+    console.log(`💾 Creating ${allRelationships.length} similarity relationships...`);
+    if (allRelationships.length > 0) {
+      // Process in batches of 100 to avoid overwhelming the database
+      const batchSize = 100;
+      for (let i = 0; i < allRelationships.length; i += batchSize) {
+        const batch = allRelationships.slice(i, i + batchSize);
+        await graphService.createSimilarityRelationshipsBatch(batch);
+        console.log(`  Batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(allRelationships.length / batchSize)} complete`);
+      }
+    }
+
+    console.log('✅ Similarity recalculation complete!');
+
+    res.json({
+      success: true,
+      message: 'Similarity recalculation completed successfully',
+      processed: allDreams.length,
+      relationshipsCreated: allRelationships.length
+    });
+  } catch (error) {
+    console.error('Error recalculating similarities:', error);
     res.status(500).json({ error: error.message });
   }
 });

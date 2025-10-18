@@ -48,9 +48,6 @@ export default function Login() {
           {/* Header */}
           <div className="text-center">
             <Link href="/" className="inline-flex items-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-xl">✦</span>
-              </div>
               <span className="text-2xl font-bold text-neutral-800">DreamSync</span>
             </Link>
             
@@ -101,22 +98,7 @@ export default function Login() {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
-                  />
-                  <span className="ml-2 block text-sm text-neutral-700">
-                    Remember me
-                  </span>
-                </label>
-
-                <Link href="/forgot-password" className="text-sm text-primary-600 hover:text-primary-700">
-                  Forgot password?
-                </Link>
-              </div>
-
+              
               <button
                 type="submit"
                 disabled={loading}

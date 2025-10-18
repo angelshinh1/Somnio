@@ -1,7 +1,10 @@
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Layout from '../components/layout/Layout';
 import Header from '../components/layout/Header';
 import DreamCard from '../components/dreams/DreamCard';
+import apiService from '../services/api';
 
 // Sample dream data for demo
 const sampleDreams = [
@@ -41,6 +44,44 @@ const sampleDreams = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      try {
+        const authenticated = apiService.isAuthenticated();
+        setIsAuthenticated(authenticated);
+        
+        // If authenticated, redirect to dashboard
+        if (authenticated) {
+          router.push('/dashboard');
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkAuth();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-primary-400 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-neutral-600">Loading...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       

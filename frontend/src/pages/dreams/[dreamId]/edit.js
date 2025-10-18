@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../../components/layout/Layout';
+import ProtectedRoute from '../../../components/ProtectedRoute';
 import apiService from '../../../services/api';
 
 export default function EditDream() {
@@ -163,13 +164,14 @@ export default function EditDream() {
   }
 
   return (
-    <Layout>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center space-x-2 text-sm text-neutral-500 mb-4">
-            <button onClick={() => router.push('/dreams')} className="hover:text-primary-600 transition-colors">
-              ← Back to Dreams
+    <ProtectedRoute>
+      <Layout>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center space-x-2 text-sm text-neutral-500 mb-4">
+              <button onClick={() => router.push('/dreams')} className="hover:text-primary-600 transition-colors">
+                ← Back to Dreams
             </button>
           </div>
           <h1 className="text-3xl font-bold text-neutral-800 mb-2">Edit Dream</h1>
@@ -388,5 +390,6 @@ export default function EditDream() {
         </div>
       </div>
     </Layout>
+    </ProtectedRoute>
   );
 }

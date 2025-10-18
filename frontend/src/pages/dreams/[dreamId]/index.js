@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../../components/layout/Layout';
+import ProtectedRoute from '../../../components/ProtectedRoute';
 import apiService from '../../../services/api';
 
 export default function ViewDream() {
   const [dream, setDream] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
   const router = useRouter();
   const { dreamId } = router.query;
 
@@ -28,6 +30,19 @@ export default function ViewDream() {
   useEffect(() => {
     fetchDream();
   }, [fetchDream]);
+
+  // Fetch current user on mount
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const user = await apiService.getCurrentUser();
+        setCurrentUser(user);
+      } catch {
+        setCurrentUser(null);
+      }
+    }
+    fetchUser();
+  }, []);
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Unknown date';
@@ -93,31 +108,33 @@ export default function ViewDream() {
   }
 
   return (
-    <Layout>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <button 
-              onClick={() => router.push('/dreams')} 
-              className="flex items-center text-sm text-neutral-500 hover:text-primary-600 transition-colors"
-            >
-              ← Back to Dreams
-            </button>
-            
-            <div className="flex space-x-2">
-              <button
-                onClick={() => router.push(`/dreams/${dreamId}/edit`)}
-                className="flex items-center space-x-2 px-4 py-2 text-neutral-600 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+    <ProtectedRoute>
+      <Layout>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <button 
+                onClick={() => router.push('/dreams')} 
+                className="flex items-center text-sm text-neutral-500 hover:text-primary-600 transition-colors"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                <span>Edit</span>
-              </button>
-            </div>
+                ← Back to Dreams
+            </button>
+            {/* Only show Edit button if current user is the creator */}
+            {currentUser && dream && (dream.userId === currentUser.id) && (
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => router.push(`/dreams/${dreamId}/edit`)}
+                  className="flex items-center space-x-2 px-4 py-2 text-neutral-600 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  <span>Edit</span>
+                </button>
+              </div>
+            )}
           </div>
-          
           <h1 className="text-3xl font-bold text-neutral-800 mb-2">{dream.title}</h1>
           <div className="flex items-center space-x-4 text-neutral-600">
             <span>{formatDate(dream.date)}</span>
@@ -202,15 +219,18 @@ export default function ViewDream() {
         </div>
 
         {/* Action buttons */}
-        <div className="mt-8 flex justify-center">
-          <button
-            onClick={() => router.push(`/dreams/${dreamId}/edit`)}
-            className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            Edit This Dream
-          </button>
-        </div>
+        {currentUser && dream && (dream.userId === currentUser.id) ? (
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => router.push(`/dreams/${dreamId}/edit`)}
+              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              Edit This Dream
+            </button>
+          </div>
+        ) : null}
       </div>
     </Layout>
+    </ProtectedRoute>
   );
 }

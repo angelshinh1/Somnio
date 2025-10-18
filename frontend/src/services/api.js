@@ -140,6 +140,11 @@ class APIService {
     return await this.request(`/dreams/user/${userId}`);
   }
 
+  // Network methods
+  async getPublicNetwork() {
+    return await this.request('/network/public');
+  }
+
   async getDream(dreamId) {
     return await this.request(`/dreams/${dreamId}`);
   }
