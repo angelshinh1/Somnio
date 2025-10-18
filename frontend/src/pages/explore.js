@@ -22,6 +22,7 @@ export default function Explore() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedDream, setSelectedDream] = useState(null);
+  const [hoveredDream, setHoveredDream] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
@@ -72,6 +73,10 @@ export default function Explore() {
       // Authenticated users can see the dream details
       setSelectedDream(dream);
     }
+  };
+
+  const handleDreamHover = (dream) => {
+    setHoveredDream(dream);
   };
 
   const handleCloseDreamDetail = () => {
@@ -153,10 +158,47 @@ export default function Explore() {
           <DreamNetwork3D
             networkData={networkData}
             onDreamClick={handleDreamClick}
+            onDreamHover={handleDreamHover}
             selectedDream={selectedDream}
           />
         )}
       </div>
+
+      {/* Hover Tooltip */}
+      {hoveredDream && !selectedDream && (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none">
+          <div className="bg-slate-800/95 backdrop-blur-md rounded-lg shadow-2xl border border-primary-700/50 p-4 max-w-sm">
+            <div className="flex items-center gap-3 mb-2">
+              <div 
+                className="w-8 h-8 rounded-full flex-shrink-0"
+                style={{
+                  backgroundColor: getEmotionColor(hoveredDream.emotion),
+                  boxShadow: `0 0 15px ${getEmotionColor(hoveredDream.emotion)}60`
+                }}
+              />
+              <h4 className="text-lg font-semibold text-primary-100 truncate">
+                {hoveredDream.title}
+              </h4>
+            </div>
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              <span className="text-xs px-2 py-0.5 bg-primary-900/40 text-primary-300 rounded">
+                {hoveredDream.emotion}
+              </span>
+              {hoveredDream.tags && hoveredDream.tags.slice(0, 3).map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="text-xs px-2 py-0.5 bg-slate-700/60 text-primary-200 rounded"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+            <p className="text-primary-300 text-sm italic">
+              Click to view details
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Dream Detail Panel */}
       {selectedDream && (
