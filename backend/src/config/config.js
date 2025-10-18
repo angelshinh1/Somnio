@@ -9,6 +9,6 @@ module.exports = {
     password: process.env.NEO4J_PASSWORD
   },
   corsOrigins: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.com'] 
+    ? (process.env.CORS_ORIGINS || 'https://somnio-r9ro.vercel.app').split(',')
     : ['http://localhost:3000', 'http://localhost:5173']
 };
