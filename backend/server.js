@@ -178,8 +178,8 @@ app.post('/api/dreams', async (req, res) => {
           // Get all other public dreams
           const allDreams = await graphService.getAllPublicDreamsForSimilarity();
           
-          // Find similar dreams
-          const similarDreams = similarityService.findSimilarDreams(dream, allDreams, 0.2);
+          // Find similar dreams (using 0.15 threshold for more connections)
+          const similarDreams = similarityService.findSimilarDreams(dream, allDreams, 0.15);
           
           console.log(`✨ Found ${similarDreams.length} similar dreams for dream: ${dream.id}`);
           
@@ -254,8 +254,8 @@ app.put('/api/dreams/:dreamId', async (req, res) => {
           // Get all other public dreams
           const allDreams = await graphService.getAllPublicDreamsForSimilarity();
           
-          // Find similar dreams
-          const similarDreams = similarityService.findSimilarDreams(updatedDream, allDreams, 0.2);
+          // Find similar dreams (using 0.15 threshold for more connections)
+          const similarDreams = similarityService.findSimilarDreams(updatedDream, allDreams, 0.15);
           
           console.log(`✨ Found ${similarDreams.length} similar dreams for updated dream: ${dreamId}`);
           
