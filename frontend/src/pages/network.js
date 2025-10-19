@@ -191,7 +191,7 @@ export default function Network() {
 
         {/* Mobile hint */}
         {!displayDream && (
-          <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-10 md:hidden">
+          <div className="absolute top-32 left-1/2 transform -translate-x-1/2 z-10 md:hidden">
             <div className="bg-white/10 backdrop-blur-md rounded-full border border-white/20 px-4 py-2 text-white text-xs animate-pulse">
               Tap a dream to view details
             </div>
@@ -342,11 +342,11 @@ export default function Network() {
               <span>Your Dreams</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded-full bg-accent-400 shadow-lg shadow-accent-400/50"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/50"></div>
               <span>Similar Dreams</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-0.5 bg-gradient-to-r from-primary-400 to-accent-400"></div>
+              <div className="w-8 h-0.5 bg-gradient-to-r from-primary-400 to-yellow-400"></div>
               <span>Connection</span>
             </div>
           </div>
