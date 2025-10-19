@@ -335,15 +335,11 @@ export default function Network() {
 
         {/* Legend - Hidden on mobile when dream is selected */}
         <div className={`absolute top-20 md:top-24 left-4 md:left-6 z-10 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-3 md:p-4 text-white transition-opacity ${displayDream ? 'opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto' : 'opacity-100'}`}>
-          <h3 className="text-xs md:text-sm font-semibold mb-2 md:mb-3">Legend</h3>
+          <h3 className="text-xs md:text-sm font-semibold mb-2 md:mb-3">Information</h3>
           <div className="space-y-1.5 md:space-y-2 text-xs">
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 rounded-full bg-primary-400 shadow-lg shadow-primary-400/50"></div>
               <span>Your Dreams</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/50"></div>
-              <span>Similar Dreams</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-8 h-0.5 bg-gradient-to-r from-primary-400 to-yellow-400"></div>
