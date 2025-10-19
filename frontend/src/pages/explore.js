@@ -173,7 +173,7 @@ export default function Explore() {
           />
           
           {/* Info Panel */}
-          <div className="fixed top-20 left-4 right-4 md:left-auto md:right-auto md:top-24 md:left-1/2 md:-translate-x-1/2 md:w-[600px] z-50 bg-slate-800/98 backdrop-blur-lg rounded-xl border border-primary-700/50 shadow-2xl animate-slide-down">
+          <div className="fixed top-24 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-[600px] z-50 bg-slate-800/98 backdrop-blur-lg rounded-xl border border-primary-700/50 shadow-2xl animate-slide-down">
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>

@@ -320,62 +320,56 @@ class GraphService {
 
   // Get the public network of all connected dreams
   async getPublicNetwork() {
-    const query = `
+    // First get all public dreams
+    const allDreamsQuery = `
+      MATCH (d:Dream)
+      WHERE d.isPublic = true
+      RETURN d
+    `;
+    
+    // Then get all connections between public dreams
+    const connectionsQuery = `
       MATCH (d1:Dream)-[s:SIMILAR_TO]->(d2:Dream)
       WHERE d1.isPublic = true AND d2.isPublic = true
-      RETURN d1, d2, s.similarity as similarity, s.sharedThemes as sharedThemes
+      RETURN d1.id as source, d2.id as target, s.similarity as similarity, s.sharedThemes as sharedThemes
     `;
 
-    const result = await this.runQuery(query);
+    const [dreamsResult, connectionsResult] = await Promise.all([
+      this.runQuery(allDreamsQuery),
+      this.runQuery(connectionsQuery)
+    ]);
     
-    // Build nodes and links
+    // Build nodes map from all public dreams
     const nodesMap = new Map();
-    const links = [];
+    
+    dreamsResult.records.forEach(record => {
+      const dreamRaw = record.get('d').properties;
+      const dream = {
+        id: dreamRaw.id,
+        title: dreamRaw.title,
+        description: dreamRaw.description,
+        emotion: dreamRaw.emotion,
+        tags: this.convertNeo4jValue(dreamRaw.tags) || [],
+        date: this.convertNeo4jValue(dreamRaw.date),
+        vividness: this.convertNeo4jValue(dreamRaw.vividness),
+        lucidDream: dreamRaw.lucidDream,
+        recurring: dreamRaw.recurring
+      };
+      
+      nodesMap.set(dream.id, dream);
+    });
 
-    result.records.forEach(record => {
-      const dream1Raw = record.get('d1').properties;
-      const dream2Raw = record.get('d2').properties;
+    // Build links array
+    const links = [];
+    connectionsResult.records.forEach(record => {
+      const source = record.get('source');
+      const target = record.get('target');
       const similarity = this.convertNeo4jValue(record.get('similarity'));
       const sharedThemes = this.convertNeo4jValue(record.get('sharedThemes')) || [];
 
-      // Convert Neo4j properties to plain JavaScript values
-      const dream1 = {
-        id: dream1Raw.id,
-        title: dream1Raw.title,
-        description: dream1Raw.description,
-        emotion: dream1Raw.emotion,
-        tags: this.convertNeo4jValue(dream1Raw.tags) || [],
-        date: this.convertNeo4jValue(dream1Raw.date),
-        vividness: this.convertNeo4jValue(dream1Raw.vividness),
-        lucidDream: dream1Raw.lucidDream,
-        recurring: dream1Raw.recurring
-      };
-
-      const dream2 = {
-        id: dream2Raw.id,
-        title: dream2Raw.title,
-        description: dream2Raw.description,
-        emotion: dream2Raw.emotion,
-        tags: this.convertNeo4jValue(dream2Raw.tags) || [],
-        date: this.convertNeo4jValue(dream2Raw.date),
-        vividness: this.convertNeo4jValue(dream2Raw.vividness),
-        lucidDream: dream2Raw.lucidDream,
-        recurring: dream2Raw.recurring
-      };
-
-      // Add nodes to map
-      if (!nodesMap.has(dream1.id)) {
-        nodesMap.set(dream1.id, dream1);
-      }
-
-      if (!nodesMap.has(dream2.id)) {
-        nodesMap.set(dream2.id, dream2);
-      }
-
-      // Add link
       links.push({
-        source: dream1.id,
-        target: dream2.id,
+        source,
+        target,
         similarity,
         sharedThemes
       });
