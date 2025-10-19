@@ -140,9 +140,9 @@ function ConnectionLine({ source, target, similarity }) {
 
   useFrame((state) => {
     if (lineRef.current) {
-      // Animate opacity for shimmer effect
-      const opacity = 0.2 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-      lineRef.current.material.opacity = opacity * similarity;
+      // Animate opacity for shimmer effect - increased base opacity
+      const opacity = 0.5 + Math.sin(state.clock.elapsedTime * 2) * 0.15;
+      lineRef.current.material.opacity = opacity * Math.max(similarity, 0.6);
     }
   });
 
@@ -163,16 +163,21 @@ function ConnectionLine({ source, target, similarity }) {
     return new THREE.BufferGeometry().setFromPoints(points);
   }, [points]);
 
+  // Use tube geometry for thicker lines
+  const tubeGeometry = useMemo(() => {
+    const curve = new THREE.CatmullRomCurve3(points);
+    return new THREE.TubeGeometry(curve, 50, 0.02, 8, false);
+  }, [points]);
+
   return (
-    <line ref={lineRef} geometry={geometry}>
-      <lineBasicMaterial
+    <mesh ref={lineRef} geometry={tubeGeometry}>
+      <meshBasicMaterial
         attach="material"
         color={new THREE.Color('#0891b2')}
         transparent
-        opacity={0.3 * similarity}
-        linewidth={2}
+        opacity={0.6 * Math.max(similarity, 0.6)}
       />
-    </line>
+    </mesh>
   );
 }
 
