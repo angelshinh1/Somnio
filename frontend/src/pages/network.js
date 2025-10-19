@@ -65,7 +65,7 @@ export default function Network() {
             tags: dream.tags || [],
             date: dream.date,
             isUserDream: true,
-            vividness: dream.vividness || 5,
+            vividness: dream.vividness !== undefined && dream.vividness !== null ? dream.vividness : 5,
             lucidDream: dream.lucidDream || false,
             recurring: dream.recurring || false
           });
@@ -85,7 +85,7 @@ export default function Network() {
                   tags: similarDream.tags || [],
                   date: similarDream.date,
                   isUserDream: false,
-                  vividness: similarDream.vividness || 5,
+                  vividness: similarDream.vividness !== undefined && similarDream.vividness !== null ? similarDream.vividness : 5,
                   lucidDream: similarDream.lucidDream || false,
                   recurring: similarDream.recurring || false
                 });
@@ -274,7 +274,7 @@ export default function Network() {
                       <div
                         key={i}
                         className={`h-2 w-2 rounded-full ${
-                          i < displayDream.vividness
+                          i < Math.min(Math.max(displayDream.vividness || 0, 0), 10)
                             ? 'bg-primary-500'
                             : 'bg-neutral-200'
                         }`}
