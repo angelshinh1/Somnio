@@ -241,12 +241,6 @@ export default function Explore() {
                     </div>
                   </div>
                 )}
-
-                <div className="pt-4 border-t border-slate-700">
-                  <p className="text-xs text-primary-400 text-center">
-                    Click or tap on any dream node to view its details
-                  </p>
-                </div>
               </div>
             </div>
           </div>
