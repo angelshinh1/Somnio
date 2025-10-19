@@ -241,19 +241,16 @@ export default function Explore() {
                     </div>
                   </div>
                 )}
+
+                <div className="pt-4 border-t border-slate-700">
+                  <p className="text-xs text-primary-400 text-center">
+                    Click or tap on any dream node to view its details
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </>
-      )}
-
-      {/* Mobile hint */}
-      {!displayDream && !showInfo && (
-        <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-10 md:hidden">
-          <div className="bg-white/10 backdrop-blur-md rounded-full border border-white/20 px-4 py-2 text-white text-xs animate-pulse">
-            Tap a dream to view details
-          </div>
-        </div>
       )}
 
       {/* Network Visualization */}

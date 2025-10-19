@@ -151,6 +151,16 @@ export default function Header() {
             onClick={() => setIsMenuOpen(false)}
           />
           
+          {/* Close Button */}
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="absolute top-5 right-4 p-2 rounded-lg text-neutral-600 hover:text-neutral-800 hover:bg-neutral-100 transition-colors z-[60]"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
           {/* Menu Content */}
           <div className="relative h-full flex flex-col items-center justify-center px-8">
             <nav className="flex flex-col items-center space-y-8 w-full max-w-sm">
@@ -233,11 +243,6 @@ export default function Header() {
                 </>
               )}
             </nav>
-
-            {/* Optional: Add decorative element or branding at bottom */}
-            <div className="absolute bottom-8 text-center">
-              <p className="text-sm text-neutral-500">Somnio Dream Journal</p>
-            </div>
           </div>
         </div>
       )}
