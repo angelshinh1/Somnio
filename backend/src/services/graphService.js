@@ -71,6 +71,7 @@ class GraphService {
         tags: $tags,
         emotion: $emotion,
         embedding: $embedding,
+        vividness: $vividness,
         createdAt: datetime(),
         isPublic: $isPublic,
         lucidDream: $lucidDream,
@@ -82,6 +83,7 @@ class GraphService {
     const params = {
       id: uuidv4(),
       ...dreamData,
+      vividness: dreamData.vividness !== undefined && dreamData.vividness !== null ? dreamData.vividness : 5,
       isPublic: dreamData.isPublic !== undefined ? dreamData.isPublic : true,
       lucidDream: dreamData.lucidDream || false,
       recurring: dreamData.recurring || false
