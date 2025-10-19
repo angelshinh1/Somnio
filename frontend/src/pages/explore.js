@@ -24,6 +24,7 @@ export default function Explore() {
   const [selectedDream, setSelectedDream] = useState(null);
   const [pinnedDream, setPinnedDream] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -126,15 +127,21 @@ export default function Explore() {
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-slate-900">
       {/* Header Bar */}
-      <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-slate-900/95 to-transparent backdrop-blur-sm p-4 md:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">Public Dream Network</h1>
-            <p className="text-sm md:text-base text-primary-300">
-              Explore {networkData?.nodes?.length || 0} connected dreams from the community
-            </p>
+      <div className="absolute top-0 left-0 right-0 z-20 bg-slate-900/95 backdrop-blur-sm border-b border-white/10">
+        <div className="px-4 md:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <h1 className="text-xl md:text-2xl font-bold text-white">Public Dream Network</h1>
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all group"
+              title="About this network"
+            >
+              <svg className="w-4 h-4 md:w-5 md:h-5 text-primary-300 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
           </div>
-          <div className="flex gap-2 md:gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             {!isAuthenticated && (
               <button
                 onClick={() => router.push('/login')}
@@ -145,19 +152,109 @@ export default function Explore() {
             )}
             <button
               onClick={() => router.push('/')}
-              className="flex items-center space-x-2 px-3 md:px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all text-sm md:text-base"
+              className="flex items-center space-x-2 px-3 md:px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-lg transition-all"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              <span className="hidden md:inline">Home</span>
+              <span className="hidden md:inline text-sm">Home</span>
             </button>
           </div>
         </div>
       </div>
 
+      {/* Info Modal/Dropdown */}
+      {showInfo && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 animate-fade-in"
+            onClick={() => setShowInfo(false)}
+          />
+          
+          {/* Info Panel */}
+          <div className="fixed top-20 left-4 right-4 md:left-auto md:right-auto md:top-24 md:left-1/2 md:-translate-x-1/2 md:w-[600px] z-50 bg-slate-800/98 backdrop-blur-lg rounded-xl border border-primary-700/50 shadow-2xl animate-slide-down">
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-white mb-1">About Public Network</h2>
+                  <p className="text-sm text-primary-300">
+                    {networkData?.nodes?.length || 0} connected dreams • {networkData?.links?.length || 0} connections
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowInfo(false)}
+                  className="p-1.5 text-primary-400 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-primary-300 mb-2">What is this?</h3>
+                  <p className="text-sm text-primary-200 leading-relaxed">
+                    Explore connected dreams from the Somnio community. Dreams are connected based on shared themes, emotions, and content through advanced NLP analysis.
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-slate-700/40 rounded-lg p-4 border border-slate-600">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-accent-400 shadow-lg shadow-accent-400/50"></div>
+                      <h4 className="text-sm font-semibold text-white">Community Dreams</h4>
+                    </div>
+                    <p className="text-xs text-primary-300">
+                      Public dreams shared by community members
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-700/40 rounded-lg p-4 border border-slate-600">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="w-8 h-0.5 bg-gradient-to-r from-accent-400 to-primary-400"></div>
+                      <h4 className="text-sm font-semibold text-white">Connections</h4>
+                    </div>
+                    <p className="text-xs text-primary-300">
+                      Links between dreams with similar themes
+                    </p>
+                  </div>
+                </div>
+
+                {!isAuthenticated && (
+                  <div className="bg-primary-900/30 border border-primary-700/50 rounded-lg p-4">
+                    <div className="flex items-start space-x-3">
+                      <span className="text-2xl">💡</span>
+                      <div>
+                        <h4 className="text-sm font-semibold text-primary-200 mb-1">Login to Unlock More</h4>
+                        <p className="text-xs text-primary-300 mb-3">
+                          Sign in to view full dream details, connect with dreamers, and add your own dreams to the network.
+                        </p>
+                        <button
+                          onClick={() => router.push('/login')}
+                          className="text-xs bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                        >
+                          Login Now
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-4 border-t border-slate-700">
+                  <p className="text-xs text-primary-400 text-center">
+                    Click or tap on any dream node to view its details
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Mobile hint */}
-      {!displayDream && (
+      {!displayDream && !showInfo && (
         <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-10 md:hidden">
           <div className="bg-white/10 backdrop-blur-md rounded-full border border-white/20 px-4 py-2 text-white text-xs animate-pulse">
             Tap a dream to view details
@@ -421,34 +518,9 @@ export default function Explore() {
         </div>
       )}
 
-      {/* Info Panel - Hidden on mobile when dream is selected */}
-      <div className={`absolute top-20 md:top-24 left-4 md:left-6 z-10 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-3 md:p-4 max-w-xs transition-opacity ${displayDream ? 'opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto' : 'opacity-100'}`}>
-        <h3 className="text-white font-semibold mb-2 text-sm md:text-base">About Public Network</h3>
-        <p className="text-primary-300 text-xs md:text-sm mb-3">
-          Explore connected dreams from the Somnio community based on shared themes and emotions.
-        </p>
-        <div className="space-y-2 text-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-accent-400 shadow-lg shadow-accent-400/50"></div>
-            <span className="text-white">Community Dreams</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-0.5 bg-gradient-to-r from-accent-400 to-primary-400"></div>
-            <span className="text-white">Connection</span>
-          </div>
-        </div>
-        {!isAuthenticated && (
-          <div className="mt-4 pt-4 border-t border-white/20">
-            <p className="text-primary-300 text-xs">
-              💡 <span className="font-semibold">Tip:</span> Login to view full dream details!
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Stats Panel - Hidden on mobile when dream is selected */}
+      {/* Stats Panel - Hidden on mobile when dream is selected and when info is open */}
       {networkData && (
-        <div className={`absolute top-20 md:top-24 right-4 md:right-6 z-10 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-3 md:p-4 text-white transition-opacity ${displayDream ? 'opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto' : 'opacity-100'}`}>
+        <div className={`absolute top-20 md:top-24 right-4 md:right-6 z-10 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-3 md:p-4 text-white transition-opacity ${displayDream || showInfo ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <h3 className="text-sm font-semibold mb-2 md:mb-3">Network Stats</h3>
           <div className="space-y-1.5 md:space-y-2 text-xs">
             <div className="flex justify-between space-x-4">

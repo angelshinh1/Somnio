@@ -188,16 +188,7 @@ export default function Network() {
             </button>
           </div>
         </div>
-
-        {/* Mobile hint */}
-        {!displayDream && (
-          <div className="absolute top-32 left-1/2 transform -translate-x-1/2 z-10 md:hidden">
-            <div className="bg-white/10 backdrop-blur-md rounded-full border border-white/20 px-4 py-2 text-white text-xs animate-pulse">
-              Tap a dream to view details
-            </div>
-          </div>
-        )}
-
+        
         {/* 3D Network Visualization */}
         <Suspense fallback={
           <div className="h-screen flex items-center justify-center bg-slate-900">
