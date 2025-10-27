@@ -150,8 +150,8 @@ Somnio/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/angelshinh1/dreamsync.git
-cd dreamsync
+git clone https://github.com/angelshinh1/somnio.git
+cd somnio
 ```
 
 ### 2. Backend Setup
@@ -334,7 +334,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Angel Shinh** - [@angelshinh1](https://github.com/angelshinh1)
 
-**Project Link:** [https://github.com/angelshinh1/dreamsync](https://github.com/angelshinh1/dreamsync)
+**Project Link:** [https://github.com/angelshinh1/somnio](https://github.com/angelshinh1/dreamsync)
 
 ---
 
